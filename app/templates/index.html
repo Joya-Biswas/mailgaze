@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mailgaze — Email Header Forensics</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mailgaze</h1>
+            <p class="subtitle">Email Header Forensics</p>
+        </header>
+
+        <section class="card">
+            <h2>What is this?</h2>
+            <p>
+                Mailgaze analyzes email headers to detect phishing, spoofing, and other email-based attacks.
+                Paste the full headers from a suspicious email and get an instant forensic report.
+            </p>
+        </section>
+
+        <section class="card">
+            <h2>Analyze an Email</h2>
+
+            {% if error %}
+            <div class="input-error">
+                <h3>That doesn't look like email headers</h3>
+                <p>{{ error }}</p>
+                <p>
+                    Headers are the hidden routing information attached to every
+                    email &mdash; not the message you read on screen. Your email
+                    client hides them by default. To get them:
+                </p>
+                <ul>
+                    <li><strong>Gmail:</strong> open the email &rarr; click the
+                        <strong>&#8942;</strong> (three dots) at the top right of the
+                        message &rarr; <strong>Show original</strong> &rarr;
+                        <strong>Copy to clipboard</strong></li>
+                    <li><strong>Outlook:</strong> open the email &rarr; File &rarr;
+                        Properties &rarr; <em>Internet headers</em></li>
+                    <li><strong>Apple Mail:</strong> View &rarr; Message &rarr;
+                        <em>All Headers</em></li>
+                    <li><strong>Thunderbird:</strong> Ctrl+U</li>
+                </ul>
+                <p>
+                    What you paste should start with lines like these:
+                </p>
+                <pre class="input-error-example">Delivered-To: you@gmail.com
+Received: from mail.example.com (mail.example.com [203.0.113.5])
+        by mx.google.com with ESMTPS id abc123
+Authentication-Results: mx.google.com; spf=pass; dkim=pass
+From: Someone &lt;someone@example.com&gt;
+Subject: The subject line</pre>
+                <p>
+                    Not sure? Click a sample below to see what valid input looks like.
+                </p>
+            </div>
+            {% endif %}
+
+            <div class="how-to">
+                <p class="how-to-steps">
+                    <strong>Gmail:</strong> open the email &rarr; click
+                    <strong>&#8942;</strong> (three dots, top right of the message)
+                    &rarr; <strong>Show original</strong> &rarr;
+                    <strong>Copy to clipboard</strong>. Paste the whole thing below.
+                </p>
+                <details>
+                    <summary>What should it look like?</summary>
+                    <p class="how-to-note">
+                        Headers are the routing information behind an email, not the
+                        message you read. Yours will be longer, but it starts like this:
+                    </p>
+<pre class="how-to-example">Delivered-To: you@gmail.com
+Received: from mail.example.com (mail.example.com [203.0.113.5])
+        by mx.google.com with ESMTPS id abc123
+        for &lt;you@gmail.com&gt;; Fri, 7 Aug 2026 14:27:00 -0700
+Authentication-Results: mx.google.com; spf=pass; dkim=pass; dmarc=pass
+From: Someone &lt;someone@example.com&gt;
+Subject: The subject line</pre>
+                    <p class="how-to-note">
+                        Lots of <code>Word:</code> lines &mdash; that's the sign you
+                        have the right thing. Pasting the readable message body
+                        instead won't work.
+                    </p>
+                </details>
+            </div>
+
+            <form method="POST" action="/analyze">
+                <label for="headers">Paste email headers here:</label>
+                <textarea
+                    id="headers"
+                    name="headers"
+                    rows="25"
+                    placeholder="Paste the complete email headers (not the body). In Gmail: open the email, click the three dots, choose 'Show original', then 'Copy to clipboard'."
+                    required
+                >{{ submitted or '' }}</textarea>
+
+                <label class="live-checks">
+                    <input type="checkbox" id="live_checks" name="live_checks" value="1">
+                    <span>
+                        <strong>Also verify against DNS</strong> &mdash; look up the
+                        sender domain's real SPF and DMARC records and check the
+                        sending server against them. This is the only check a
+                        forged email cannot fake, because it asks the sender's
+                        own DNS rather than trusting the message.
+                        <br>
+                        <small>Sends DNS queries for the sender's domain. Leave
+                        unticked to keep the analysis entirely offline.</small>
+                    </span>
+                </label>
+
+                <button type="submit" class="btn btn-primary">Analyze</button>
+
+                <div class="samples">
+                    <p>
+                        Or try a sample:
+                        <a href="#" class="sample-link" data-sample="legitimate">Legitimate</a>
+                        |
+                        <a href="#" class="sample-link" data-sample="phishing">Phishing</a>
+                    </p>
+                </div>
+            </form>
+        </section>
+
+        <footer>
+            <p>
+                Mailgaze • Email header forensics •
+                Nothing is stored. Analysis runs locally unless you enable
+                DNS checks, which look up the sender's domain only.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Handle sample loading
+        const sampleLinks = document.querySelectorAll('.sample-link');
+        sampleLinks.forEach(link => {
+            link.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const sampleName = link.dataset.sample;
+
+                try {
+                    const response = await fetch(`/sample/${sampleName}`);
+                    const content = await response.text();
+                    document.getElementById('headers').value = content;
+                } catch (error) {
+                    alert(`Error loading sample: ${error}`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

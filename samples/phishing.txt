@@ -1,0 +1,56 @@
+Received: from mail-ai2-x.google.com (mail-ai2-x.google.com. [2607:f8b0:4864:20::52a])
+	by mx.gmail.com with ESMTPS id a15-20020a17096b0000200b002a1234567bsi99887766pla.0.2024.01.15.10.45.30
+	for <user@gmail.com>
+	(version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+	Mon, 15 Jan 2024 10:45:30 +0000
+Received: by mail-ai2-x.google.com with SMTP id a15-20020a17096b0000200b002a1234567bsi99887766pla.0
+	for <user@gmail.com>; Mon, 15 Jan 2024 10:45:30 +0000
+Return-Path: <noreply@spam-sender.tk>
+Received: from mail.spam-sender.tk (mail.spam-sender.tk [198.51.100.50])
+	by mail-ai2-x.google.com with ESMTP id a15-20020a17096b0000200b002a1234567bsi99887766pla.0
+	for <user@gmail.com>; Mon, 15 Jan 2024 10:45:25 +0000
+Received: from mail2.spam-sender.tk (mail2.spam-sender.tk [198.51.100.51])
+	by mail.spam-sender.tk with ESMTP id abc123
+	for <user@gmail.com>; Mon, 15 Jan 2024 10:45:20 +0000
+Received: from relay.spam-sender.tk (relay.spam-sender.tk [198.51.100.52])
+	by mail2.spam-sender.tk with ESMTP id def456
+	for <user@gmail.com>; Mon, 15 Jan 2024 10:45:15 +0000
+Received: from router.spam-sender.tk (router.spam-sender.tk [198.51.100.53])
+	by relay.spam-sender.tk with ESMTP id ghi789
+	for <user@gmail.com>; Mon, 15 Jan 2024 10:45:10 +0000
+Received: from internal1.spam-sender.tk (internal1.spam-sender.tk [198.51.100.54])
+	by router.spam-sender.tk with ESMTP id jkl012
+	for <user@gmail.com>; Mon, 15 Jan 2024 10:45:05 +0000
+Received: from internal2.spam-sender.tk (internal2.spam-sender.tk [198.51.100.55])
+	by internal1.spam-sender.tk with ESMTP id mno345
+	for <user@gmail.com>; Mon, 15 Jan 2024 10:45:00 +0000
+Received: from internal3.spam-sender.tk (internal3.spam-sender.tk [198.51.100.56])
+	by internal2.spam-sender.tk with ESMTP id pqr678
+	for <user@gmail.com>; Mon, 15 Jan 2024 10:44:55 +0000
+Received: from archive.spam-sender.tk (archive.spam-sender.tk [198.51.100.57])
+	by internal3.spam-sender.tk with ESMTP id stu901
+	for <user@gmail.com>; Mon, 15 Jan 2024 10:44:50 +0000
+Received: from backup.spam-sender.tk (backup.spam-sender.tk [198.51.100.58])
+	by archive.spam-sender.tk with ESMTP id vwx234
+	for <user@gmail.com>; Mon, 15 Jan 2024 10:44:45 +0000
+Received: from london.spam-sender.tk (london.spam-sender.tk [192.0.2.100])
+	by backup.spam-sender.tk with ESMTP id yza567
+	for <user@gmail.com>; Mon, 15 Jan 2024 10:44:40 +0000
+Received: from sydney.spam-sender.tk (sydney.spam-sender.tk [203.0.113.200])
+	by london.spam-sender.tk with ESMTP id bcd890
+	for <user@gmail.com>; Mon, 15 Jan 2024 10:44:45 +0000
+MIME-Version: 1.0
+Date: Mon, 15 Jan 2024 03:30:00 -0500
+Message-ID: <random123@malicious.net>
+Subject: URGENT: Your PayPal Account Has Been Suspended — Verify Now
+From: "PayPal Service Center" <noreply@spam-sender.tk>
+Reply-To: paypal.verify@gmail.com
+To: user@gmail.com
+Content-Type: text/html; charset="UTF-8"
+
+<html>
+<body>
+<p>Your PayPal account has been locked due to suspicious activity. You must verify your identity immediately.</p>
+<p><a href="http://paypal-verify.spam-sender.tk/login">Click here to verify your account</a></p>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# Render deployment blueprint.
+#
+# With this file in the repository root, Render can configure the whole service
+# from the repo itself: connect the GitHub repository once, and every push to
+# the default branch redeploys automatically.
+#
+# The free plan spins the service down after roughly 15 minutes of inactivity
+# and takes ~50 seconds to wake, so the first visitor after a quiet period
+# waits. There is no charge and no card required.
+
+services:
+  - type: web
+    name: mailgaze
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+
+    # Render injects PORT and expects the service to listen on it; run.py reads
+    # PORT and HOST from the environment, so nothing else is needed here.
+    envVars:
+      - key: MAILGAZE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+
+    # Cheap liveness check: the index page renders without touching the network.
+    healthCheckPath: /

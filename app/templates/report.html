@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mailgaze — Analysis Report</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mailgaze</h1>
+            <p class="subtitle">Email Header Forensics</p>
+        </header>
+
+        <!-- The plain answer: what this is, and what to do about it. -->
+        <section class="plain plain-{{ summary.tone }}">
+            <div class="hero">
+                <div class="hero-icon">{{ summary.icon }}</div>
+                <div class="hero-copy">
+                    <span class="hero-eyebrow">{{ summary.eyebrow }}</span>
+                    <h2 class="plain-headline">{{ summary.headline }}</h2>
+                    <div class="risk-meter" role="img"
+                         aria-label="Risk level {{ summary.risk }} of 3">
+                        {% for step in [1, 2, 3] %}
+                        <span class="risk-step {{ 'on' if step <= summary.risk else '' }}"></span>
+                        {% endfor %}
+                        <span class="risk-caption">
+                            {% if summary.total_count %}
+                                {{ summary.total_count }}
+                                {{ 'thing' if summary.total_count == 1 else 'things' }} found
+                            {% else %}
+                                No problems found
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {% if summary.points %}
+            <ul class="plain-points">
+                {% for point in summary.points %}
+                <li>
+                    <span class="point-text">{{ point.text }}</span>
+
+                    {# Show the values the finding rests on. A reader who is
+                       only given a conclusion has no way to check it. #}
+                    {% if point.evidence %}
+                        {% if point.evidence.left is defined %}
+                        <div class="proof">
+                            <div class="proof-side">
+                                <span class="proof-label">{{ point.evidence.left_label }}</span>
+                                <span class="proof-value proof-claim">{{ point.evidence.left }}</span>
+                            </div>
+                            <div class="proof-arrow" aria-hidden="true">&rarr;</div>
+                            <div class="proof-side">
+                                <span class="proof-label">{{ point.evidence.right_label }}</span>
+                                <span class="proof-value proof-reality">{{ point.evidence.right }}</span>
+                            </div>
+                        </div>
+                        {% elif point.evidence.fact is defined %}
+                        <div class="proof proof-single">
+                            <div class="proof-side">
+                                <span class="proof-label">{{ point.evidence.fact_label }}</span>
+                                <span class="proof-value proof-reality">{{ point.evidence.fact }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% if summary.extra_count %}
+            <p class="plain-more">
+                and {{ summary.extra_count }} other
+                {{ 'issue' if summary.extra_count == 1 else 'issues' }} &mdash;
+                see the details below.
+            </p>
+            {% endif %}
+            {% endif %}
+
+            <div class="plain-action">
+                <strong>What to do</strong>
+                <p>{{ summary.action }}</p>
+            </div>
+        </section>
+
+        <!-- At-a-glance facts, kept short and unlabelled by jargon. -->
+        <section class="card at-a-glance">
+            <dl>
+                <dt>From</dt>
+                <dd>{{ from_addr }}</dd>
+                <dt>Subject</dt>
+                <dd>{{ subject }}</dd>
+                <dt>Sent</dt>
+                <dd>{{ date }}</dd>
+            </dl>
+        </section>
+
+        <details class="tech">
+            <summary>Show technical details</summary>
+            <div class="tech-body">
+
+        <p class="tech-intro">
+            Everything below is the full forensic breakdown &mdash; the verdict
+            above is built from it. Rule numbers (R1, R2&hellip;) are explained in
+            the project documentation.
+        </p>
+
+        <!-- Verdict Banner -->
+        <section class="verdict-banner verdict-{{ verdict_color }}">
+            <h2>{{ verdict }}</h2>
+        </section>
+
+        <!-- Summary Card -->
+        <section class="card">
+            <h3>Email Summary</h3>
+            <dl class="summary-list">
+                <dt>From:</dt>
+                <dd><code>{{ from_addr }}</code></dd>
+
+                <dt>To:</dt>
+                <dd><code>{{ to_addr }}</code></dd>
+
+                <dt>Subject:</dt>
+                <dd>{{ subject }}</dd>
+
+                <dt>Date:</dt>
+                <dd>{{ date }}</dd>
+
+                <dt>Reply-To:</dt>
+                <dd><code>{{ reply_to }}</code></dd>
+
+                <dt>Return-Path:</dt>
+                <dd><code>{{ return_path }}</code></dd>
+
+                <dt>Message-ID:</dt>
+                <dd><code>{{ message_id }}</code></dd>
+            </dl>
+        </section>
+
+        <!-- Authentication Results -->
+        <section class="card">
+            <h3>Authentication</h3>
+
+            {# A result is only meaningful if the receiving server is the one
+               that wrote it down. When it isn't, the badges below are the
+               sender's own claims, so say that plainly instead of showing
+               green checkmarks the reader will take as verification. #}
+            {% if auth_trusted %}
+                <p class="auth-provenance auth-provenance-trusted">
+                    Reported by the server that received this message
+                    ({{ auth_authserv }}).
+                </p>
+            {% elif not auth_present %}
+                <p class="auth-provenance auth-provenance-untrusted">
+                    <strong>No authentication results.</strong> This message
+                    carries no Authentication-Results header, so nothing has
+                    vouched for the sender's identity.
+                </p>
+            {% else %}
+                <p class="auth-provenance auth-provenance-untrusted">
+                    <strong>Unverified.</strong> These results could not be
+                    attributed to the receiving server &mdash; {{ auth_reason }}.
+                    Read them as claims made by the sender, not as checks that
+                    were actually performed.
+                </p>
+            {% endif %}
+
+            {% if live_checks %}
+                <p class="auth-provenance auth-provenance-trusted">
+                    <strong>Checked against DNS.</strong> The sender domain's own
+                    SPF and DMARC records were looked up independently of this
+                    message (rules R13&ndash;R16 below). A forged email cannot
+                    influence this result.
+                </p>
+            {% endif %}
+
+            <div class="auth-row">
+                <div class="auth-badge auth-{{ spf.result if auth_trusted else 'unverified' }}">
+                    <strong>SPF:</strong> {{ spf.result }}{% if not auth_trusted %} (claimed){% endif %}
+                    {% if spf.detail %}<br><small>{{ spf.detail }}</small>{% endif %}
+                </div>
+                <div class="auth-badge auth-{{ dkim.result if auth_trusted else 'unverified' }}">
+                    <strong>DKIM:</strong> {{ dkim.result }}{% if not auth_trusted %} (claimed){% endif %}
+                    {% if dkim.detail %}<br><small>{{ dkim.detail }}</small>{% endif %}
+                </div>
+                <div class="auth-badge auth-{{ dmarc.result if auth_trusted else 'unverified' }}">
+                    <strong>DMARC:</strong> {{ dmarc.result }}{% if not auth_trusted %} (claimed){% endif %}
+                    {% if dmarc.detail %}<br><small>{{ dmarc.detail }}</small>{% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Received Chain Timeline -->
+        {% if received_chain %}
+        <section class="card">
+            <h3>Email Route (Received Chain)</h3>
+            <ol class="received-chain">
+                {% for hop in received_chain %}
+                <li>
+                    <strong>Hop {{ hop.index }}</strong><br>
+                    {# A "Received: by ..." line records no sending host, which
+                       is normal for a server handing off to itself. #}
+                    {% if hop.from_host %}
+                        From: <code>{{ hop.from_host }}</code>
+                        {% if hop.from_ip %}[<code>{{ hop.from_ip }}</code>]{% endif %}<br>
+                    {% else %}
+                        <em>No sending host recorded on this hop</em><br>
+                    {% endif %}
+                    By: <code>{{ hop.by_host or '(not recorded)' }}</code><br>
+                    Protocol: <code>{{ hop.protocol }}</code><br>
+                    Location: {{ hop.geo_city }}, {{ hop.geo_country }}<br>
+                    Timestamp: {{ hop.timestamp_str }}
+                    {% if hop.time_delta %}<br>Delay from previous: {{ hop.time_delta }}{% endif %}
+                </li>
+                {% endfor %}
+            </ol>
+        </section>
+        {% endif %}
+
+        <!-- Findings by Severity -->
+        {% if high_findings %}
+        <section class="card findings-section">
+            <h3 class="severity-high">🔴 High-Risk Issues</h3>
+            <ul class="findings-list">
+                {% for finding in high_findings %}
+                <li>
+                    <strong>{{ finding.title }}</strong> ({{ finding.rule_id }})<br>
+                    {{ finding.description }}
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        {% if medium_findings %}
+        <section class="card findings-section">
+            <h3 class="severity-medium">🟡 Medium Concerns</h3>
+            <ul class="findings-list">
+                {% for finding in medium_findings %}
+                <li>
+                    <strong>{{ finding.title }}</strong> ({{ finding.rule_id }})<br>
+                    {{ finding.description }}
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        {% if low_findings %}
+        <section class="card findings-section">
+            <h3 class="severity-low">🟢 Low-Risk Observations</h3>
+            <ul class="findings-list">
+                {% for finding in low_findings %}
+                <li>
+                    <strong>{{ finding.title }}</strong> ({{ finding.rule_id }})<br>
+                    {{ finding.description }}
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        {% if not high_findings and not medium_findings and not low_findings %}
+        <section class="card">
+            <p><em>No significant findings.</em></p>
+        </section>
+        {% endif %}
+
+        <!-- Explanation -->
+        <section class="card explanation-card">
+            <h3>What Does This Mean?</h3>
+            <div class="explanation-text">
+                {{ explanation }}
+            </div>
+        </section>
+
+            </div>
+        </details>
+
+        <!-- Action Button -->
+        <div style="text-align: center; margin-top: 24px;">
+            <a href="/" class="btn btn-primary">Analyze Another Email</a>
+        </div>
+
+        <footer>
+            <p>
+                Mailgaze • Email header forensics •
+                Nothing is stored. Analysis runs locally unless you enable
+                DNS checks, which look up the sender's domain only.
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

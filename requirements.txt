@@ -1,0 +1,16 @@
+# Core dependencies
+fastapi>=0.115
+uvicorn[standard]>=0.30
+jinja2>=3.1
+python-multipart>=0.0.9
+
+# Optional: geographic lookups for the Received chain.
+# Without GeoLite2-City.mmdb in the project root, locations read "Unknown".
+geoip2>=4.8
+
+# Live SPF/DMARC evaluation against DNS (rules R13-R16, opt-in).
+# Without it those rules are skipped; the rest of the app is unaffected.
+dnspython>=2.6
+
+# Development dependencies
+# pytest>=8.0

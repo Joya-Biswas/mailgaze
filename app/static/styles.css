@@ -1,0 +1,929 @@
+/* Mailgaze Styles - Modern, minimal, and accessible */
+
+:root {
+    --color-green: #16a34a;
+    --color-yellow: #d97706;
+    --color-red: #dc2626;
+    --color-blue: #2563eb;
+    --color-gray: #6b7280;
+    --color-gray-light: #f3f4f6;
+    --color-gray-dark: #1f2937;
+    --color-white: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--color-gray-dark);
+    background-color: var(--color-gray-light);
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    color: var(--color-blue);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    margin: 8px 0 0 0;
+    color: var(--color-gray);
+}
+
+/* Cards */
+.card {
+    background-color: var(--color-white);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card h2,
+.card h3 {
+    margin-top: 0;
+    color: var(--color-gray-dark);
+}
+
+/* Form Elements */
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--color-gray-dark);
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-family: "Courier New", monospace;
+    font-size: 0.9rem;
+    resize: vertical;
+    margin-bottom: 16px;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--color-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--color-blue);
+    color: var(--color-white);
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+/* Verdict Banner */
+.verdict-banner {
+    text-align: center;
+    padding: 32px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    color: var(--color-white);
+}
+
+.verdict-banner h2 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+.verdict-green {
+    background-color: var(--color-green);
+}
+
+.verdict-yellow {
+    background-color: var(--color-yellow);
+    color: var(--color-gray-dark);
+}
+
+.verdict-red {
+    background-color: var(--color-red);
+}
+
+/* Summary List */
+.summary-list {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+}
+
+.summary-list dt {
+    font-weight: 600;
+    color: var(--color-gray-dark);
+}
+
+.summary-list dd {
+    margin: 0;
+    word-break: break-all;
+}
+
+/* Code (monospace) */
+code {
+    background-color: var(--color-gray-light);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: "Courier New", monospace;
+    font-size: 0.9em;
+}
+
+/* Authentication Badges */
+.auth-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.auth-badge {
+    flex: 1;
+    /* min-width alone lets a long unbreakable token (an SPF detail string such
+       as "smtp.mailfrom=someone@example.com") push past the rounded edge.
+       min-width: 0 lets the flex item shrink; overflow-wrap gives the token a
+       break opportunity so it stays inside the badge. */
+    min-width: 0;
+    flex-basis: 150px;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: var(--color-white);
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.auth-pass {
+    background-color: var(--color-green);
+}
+
+.auth-fail {
+    background-color: var(--color-red);
+}
+
+.auth-missing {
+    background-color: var(--color-yellow);
+    color: var(--color-gray-dark);
+}
+
+.auth-softfail {
+    background-color: var(--color-yellow);
+    color: var(--color-gray-dark);
+}
+
+.auth-neutral {
+    background-color: var(--color-gray);
+}
+
+/* Results that could not be attributed to the receiving server. Deliberately
+   neutral rather than green: an unverified "pass" must never read as a pass. */
+.auth-unverified {
+    background-color: var(--color-gray);
+    border: 2px dashed var(--color-gray-dark);
+}
+
+/* "How to get your headers" helper above the form */
+.how-to {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    background-color: #eff6ff;
+    border-left: 4px solid var(--color-blue);
+    border-radius: 6px;
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+.how-to-steps {
+    margin: 0;
+}
+
+.how-to summary {
+    margin-top: 8px;
+    color: var(--color-blue);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.how-to-note {
+    margin: 8px 0;
+    color: var(--color-gray-dark);
+}
+
+.how-to-example {
+    margin: 8px 0;
+    padding: 12px;
+    background-color: var(--color-white);
+    border: 1px solid #dbeafe;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    overflow-x: auto;
+    white-space: pre;
+}
+
+/* Shown when the paste isn't a header block at all */
+.input-error {
+    margin-bottom: 20px;
+    padding: 16px 18px;
+    background-color: #fffbeb;
+    border-left: 4px solid var(--color-yellow);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.input-error h3 {
+    margin: 0 0 8px 0;
+    color: var(--color-yellow);
+}
+
+.input-error ul {
+    margin: 8px 0;
+    padding-left: 22px;
+}
+
+.input-error li {
+    margin-bottom: 6px;
+}
+
+.input-error-example {
+    margin: 8px 0;
+    padding: 12px;
+    background-color: var(--color-gray-light);
+    border-radius: 4px;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    overflow-x: auto;
+    white-space: pre;
+}
+
+/* Opt-in live DNS checks on the upload form */
+.live-checks {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin: 16px 0;
+    padding: 12px 14px;
+    background-color: var(--color-gray-light);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+.live-checks input {
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.live-checks small {
+    color: var(--color-gray);
+}
+
+/* Provenance note above the badges */
+.auth-provenance {
+    margin: 0 0 12px 0;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.auth-provenance-trusted {
+    background-color: #f0fdf4;
+    border-left: 4px solid var(--color-green);
+    color: var(--color-gray-dark);
+}
+
+.auth-provenance-untrusted {
+    background-color: #fef2f2;
+    border-left: 4px solid var(--color-red);
+    color: var(--color-gray-dark);
+}
+
+.auth-badge small {
+    display: block;
+    margin-top: 4px;
+    opacity: 0.9;
+}
+
+/* Received Chain */
+.received-chain {
+    list-style: decimal;
+    padding-left: 24px;
+}
+
+.received-chain li {
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: var(--color-gray-light);
+    border-radius: 6px;
+}
+
+.received-chain code {
+    font-size: 0.85em;
+}
+
+/* Findings Section */
+.findings-section {
+    border-left: 4px solid var(--color-gray);
+}
+
+.findings-section.high {
+    border-left-color: var(--color-red);
+}
+
+.findings-section.medium {
+    border-left-color: var(--color-yellow);
+}
+
+.findings-section.low {
+    border-left-color: var(--color-green);
+}
+
+.severity-high {
+    color: var(--color-red);
+}
+
+.severity-medium {
+    color: var(--color-yellow);
+}
+
+.severity-low {
+    color: var(--color-green);
+}
+
+.findings-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.findings-list li {
+    margin-bottom: 12px;
+    padding: 12px;
+    background-color: var(--color-gray-light);
+    border-radius: 6px;
+}
+
+.findings-list strong {
+    color: var(--color-gray-dark);
+}
+
+/* Explanation Card */
+.explanation-card {
+    background-color: #f0f9ff;
+    border-left: 4px solid var(--color-blue);
+}
+
+.explanation-text {
+    line-height: 1.8;
+    color: var(--color-gray-dark);
+}
+
+.explanation-text p {
+    margin: 12px 0;
+}
+
+/* Sample Links */
+.samples {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.sample-link {
+    color: var(--color-blue);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.sample-link:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
+    color: var(--color-gray);
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: var(--color-blue);
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .container {
+        padding: 12px;
+    }
+
+    header h1 {
+        font-size: 1.8rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .summary-list {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .auth-row {
+        flex-direction: column;
+    }
+
+    .auth-badge {
+        min-width: auto;
+    }
+
+    textarea {
+        font-size: 16px; /* Prevents auto-zoom on iOS */
+    }
+
+    .btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* ==========================================================================
+   Plain-language result
+   The report proper is a forensic breakdown, which is the wrong first thing
+   to show someone who just wants to know whether an email is safe. This block
+   answers that in ordinary words; the breakdown moves into a disclosure below.
+   ========================================================================== */
+
+.plain {
+    margin-bottom: 20px;
+    padding: 28px;
+    border-radius: 10px;
+    border-left: 8px solid;
+    background-color: var(--color-white);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.plain-danger  { border-left-color: var(--color-red);    background-color: #fef2f2; }
+.plain-warning { border-left-color: var(--color-yellow); background-color: #fffbeb; }
+.plain-safe    { border-left-color: var(--color-green);  background-color: #f0fdf4; }
+
+.plain-headline {
+    margin: 0 0 14px 0;
+    font-size: 1.7rem;
+    line-height: 1.25;
+    color: var(--color-gray-dark);
+}
+
+.plain-danger  .plain-headline { color: #991b1b; }
+.plain-warning .plain-headline { color: #92400e; }
+.plain-safe    .plain-headline { color: #166534; }
+
+.plain-points {
+    margin: 0 0 14px 0;
+    padding-left: 20px;
+    font-size: 1.02rem;
+    line-height: 1.65;
+    color: var(--color-gray-dark);
+}
+
+.plain-points li {
+    margin-bottom: 8px;
+}
+
+.plain-more {
+    margin: 0 0 14px 0;
+    font-size: 0.9rem;
+    color: var(--color-gray);
+}
+
+.plain-action {
+    margin-top: 18px;
+    padding: 16px 18px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.plain-action strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-gray);
+}
+
+.plain-action p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-gray-dark);
+}
+
+/* Compact at-a-glance facts */
+.at-a-glance dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 18px;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.at-a-glance dt {
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.at-a-glance dd {
+    margin: 0;
+    color: var(--color-gray-dark);
+    overflow-wrap: anywhere;
+}
+
+/* The full forensic report, folded away by default */
+.tech {
+    margin-top: 8px;
+}
+
+.tech > summary {
+    padding: 14px 18px;
+    background-color: var(--color-gray-light);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-blue);
+    list-style: none;
+}
+
+.tech > summary::-webkit-details-marker { display: none; }
+
+.tech > summary::before {
+    content: "\25B8\00a0\00a0";
+    display: inline-block;
+    transition: transform 0.15s ease;
+}
+
+.tech[open] > summary::before {
+    content: "\25BE\00a0\00a0";
+}
+
+.tech > summary:hover {
+    background-color: #e5e7eb;
+}
+
+.tech-body {
+    margin-top: 16px;
+}
+
+.tech-intro {
+    margin: 0 0 16px 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-gray);
+}
+
+@media (max-width: 600px) {
+    .plain { padding: 20px; }
+    .plain-headline { font-size: 1.4rem; }
+    .at-a-glance dl { grid-template-columns: 1fr; gap: 2px 0; }
+    .at-a-glance dt { margin-top: 8px; }
+}
+
+/* ==========================================================================
+   Evidence rows
+   A verdict with no visible working reads as "trust me", and readers are
+   right to doubt it. Each plain-language point shows the actual values it
+   rests on: what the email presents, and what is behind it.
+   ========================================================================== */
+
+.point-text {
+    display: block;
+    font-weight: 500;
+}
+
+.proof {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    margin: 10px 0 4px 0;
+    padding: 12px 14px;
+    background-color: var(--color-white);
+    border: 1px solid rgba(0, 0, 0, 0.09);
+    border-radius: 8px;
+    font-weight: 400;
+}
+
+.proof-side {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+}
+
+.proof-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-gray);
+}
+
+.proof-value {
+    font-family: "Courier New", monospace;
+    font-size: 0.92rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+/* What the email presents to you */
+.proof-claim {
+    color: var(--color-gray-dark);
+    text-decoration: line-through;
+    text-decoration-color: rgba(220, 38, 38, 0.45);
+    text-decoration-thickness: 2px;
+}
+
+/* What is actually behind it */
+.proof-reality {
+    color: #991b1b;
+    font-weight: 700;
+}
+
+.proof-arrow {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    color: var(--color-gray);
+    flex-shrink: 0;
+}
+
+.proof-single .proof-value {
+    color: #991b1b;
+}
+
+/* A safe verdict shouldn't paint its evidence as alarming */
+.plain-safe .proof-reality,
+.plain-safe .proof-single .proof-value {
+    color: #166534;
+}
+
+.plain-safe .proof-claim {
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .proof {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .proof-arrow {
+        transform: rotate(90deg);
+        align-self: flex-start;
+    }
+}
+
+/* ==========================================================================
+   Result hero
+   The result is the whole reason the page exists, so it is given the weight
+   of a headline rather than the weight of a form field: a coloured band, a
+   status mark, and a risk meter readable at a glance from across a desk.
+   ========================================================================== */
+
+.plain {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    border-left: none;
+    border-radius: 14px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.10);
+}
+
+/* The coloured band across the top carries the verdict before any reading. */
+.plain::before {
+    content: "";
+    display: block;
+    height: 6px;
+}
+
+.plain-danger::before  { background: linear-gradient(90deg, #dc2626, #f87171); }
+.plain-warning::before { background: linear-gradient(90deg, #d97706, #fbbf24); }
+.plain-safe::before    { background: linear-gradient(90deg, #16a34a, #4ade80); }
+
+.hero {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 26px 28px 22px 28px;
+}
+
+.hero-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 62px;
+    height: 62px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-white);
+}
+
+.plain-danger  .hero-icon { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+.plain-warning .hero-icon { background: linear-gradient(135deg, #d97706, #b45309); }
+.plain-safe    .hero-icon { background: linear-gradient(135deg, #16a34a, #15803d); }
+
+.hero-copy {
+    min-width: 0;
+}
+
+.hero-eyebrow {
+    display: inline-block;
+    margin-bottom: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+.plain-danger  .hero-eyebrow { background-color: #dc2626; }
+.plain-warning .hero-eyebrow { background-color: #d97706; }
+.plain-safe    .hero-eyebrow { background-color: #16a34a; }
+
+.plain .plain-headline {
+    margin: 0;
+    font-size: 1.95rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+}
+
+/* Three segments: how bad, without needing to read a word. */
+.risk-meter {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.risk-step {
+    width: 34px;
+    height: 6px;
+    border-radius: 999px;
+    background-color: rgba(0, 0, 0, 0.10);
+}
+
+.plain-danger  .risk-step.on { background-color: #dc2626; }
+.plain-warning .risk-step.on { background-color: #d97706; }
+.plain-safe    .risk-step.on { background-color: #16a34a; }
+
+.risk-caption {
+    margin-left: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+/* Each point becomes its own card so the evidence inside has room to breathe */
+.plain-points {
+    list-style: none;
+    margin: 0;
+    padding: 0 28px;
+}
+
+.plain-points li {
+    margin-bottom: 12px;
+    padding: 16px 18px;
+    background-color: var(--color-white);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.plain-points .point-text {
+    font-size: 1.04rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--color-gray-dark);
+}
+
+.plain-more {
+    margin: 0;
+    padding: 0 28px 4px 28px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-gray);
+}
+
+.plain-action {
+    margin: 18px 28px 26px 28px;
+    padding: 18px 20px;
+    border-radius: 10px;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.045);
+}
+
+.plain-action strong {
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+}
+
+.plain-action p {
+    font-size: 1.02rem;
+}
+
+/* The evidence row sits inside a point card, so it drops its own border */
+.proof {
+    background-color: var(--color-gray-light);
+    border: none;
+}
+
+@media (max-width: 600px) {
+    .hero { flex-direction: column; align-items: flex-start; gap: 14px; padding: 22px 20px 18px 20px; }
+    .hero-icon { width: 52px; height: 52px; font-size: 1.6rem; }
+    .plain .plain-headline { font-size: 1.5rem; }
+    .plain-points { padding: 0 20px; }
+    .plain-more { padding: 0 20px 4px 20px; }
+    .plain-action { margin: 16px 20px 22px 20px; }
+    .risk-caption { margin-left: 4px; font-size: 0.76rem; }
+}
+
+/* ==========================================================================
+   Overflow safety
+   Header values are full of long unbreakable tokens — Message-IDs, SPF detail
+   strings, tracking URLs. Without an explicit break opportunity they run past
+   their container's edge instead of wrapping.
+   ========================================================================== */
+
+code,
+.findings-list li,
+.received-chain li,
+.explanation-text,
+.auth-provenance,
+.summary-list dd {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* break-all splits ordinary prose mid-word; break-word only splits tokens
+   that genuinely cannot fit. */
+.summary-list dd {
+    word-break: break-word;
+}

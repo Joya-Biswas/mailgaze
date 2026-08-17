@@ -1,0 +1,62 @@
+Received: from mail-io1-f68.google.com (mail-io1-f68.google.com. [2607:f8b0:4864:20::468])
+	by mx.gmail.com with ESMTPS id c15-20020a170902d44200b001c3e6b3a7b5si11234567pln.1.2024.01.15.08.30.00
+	for <user@gmail.com>
+	(version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+	Mon, 15 Jan 2024 08:30:00 -0800
+Received: by mail-io1-f68.google.com with SMTP id c15-20020a170902d44200b001c3e6b3a7b5si11234567pln.1
+	for <user@gmail.com>; Mon, 15 Jan 2024 08:30:00 -0800
+Return-Path: <sender@example.com>
+Received: from mail.example.com (mail.example.com [203.0.113.5])
+	by mail-io1-f68.google.com with ESMTP id c15-20020a170902d44200b001c3e6b3a7b5si11234567pln.1
+	for <user@gmail.com>; Mon, 15 Jan 2024 08:29:55 -0800
+Received: from internal.example.com (internal.example.com [192.0.2.3])
+	by mail.example.com with ESMTP id 12345
+	for <user@gmail.com>; Mon, 15 Jan 2024 08:29:50 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=example.com; s=default;
+	h=from:to:subject:date:message-id:content-type;
+	bh=+txIZeJwjAYGHEKlY3y+sdf7gHgWKa0uZx6XqmJqS8=;
+	b=EFTJwKl7+qxvZWLpqTj5KmNaKsH3sDxQp7j7Nzk5Zx6w8qL9pMcDx2YqRsT0uV1JvWxY
+	 aBcDeFg9hIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrS
+	 tUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMn
+	 OpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjK
+	 lMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGh
+	 IjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGh
+	 IjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGh
+	 IjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGh
+	 IjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGh
+	 IjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGh
+	 IjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+	 jKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfGhI
+Authentication-Results: mx.gmail.com;
+       spf=pass (google.com: domain of sender@example.com designates 203.0.113.5 as permitted sender) smtp.mailfrom=sender@example.com;
+       dkim=pass header.d=example.com header.s=default header.b=EFTJwKl7+
+       dmarc=pass (p=reject fo=1:d:s) header.from=example.com;
+MIME-Version: 1.0
+Date: Mon, 15 Jan 2024 08:29:45 -0800
+Message-ID: <CADc-_xd+sZf0Z3zV8w9x0u1v2w3@mail.example.com>
+Subject: Weekly Status Update
+From: John Smith <sender@example.com>
+To: user@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hi there,
+
+Just sending the weekly status update as requested. Everything is on track for the Q1 launch.
+
+Best,
+John
