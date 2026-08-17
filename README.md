@@ -10,7 +10,7 @@ Analyze email headers to detect phishing, spoofing, and email-based attacks.
 
      ───────────────────────────────────────────────────────────────────── -->
 
-**🔗 Live demo:** _not deployed yet — see [Putting it online](#putting-it-online-free)_
+**🔗 Live demo:** _not deployed yet — see [DEPLOY.md](DEPLOY.md)_
 
 ## What It Does
 
@@ -29,7 +29,11 @@ Email phishing is a leading attack vector for credential theft, malware, and fra
 
 - **Backend**: Python 3.11+, FastAPI, Uvicorn
 - **Frontend**: HTML5, CSS3 (no external frameworks)
-- **Analysis**: Stdlib `email.parser`, regex extraction, MaxMind GeoIP2 (optional)
+- **Header analysis**: Stdlib `email.parser`, regex extraction
+- **Body analysis**: Stdlib MIME decoding (base64, quoted-printable) to inspect links
+- **Live verification**: `dnspython` — SPF evaluation and DMARC lookup against
+  the sender's real DNS records (opt-in)
+- **Geolocation**: MaxMind GeoIP2 (optional)
 - **Explanations**: Rule-driven templates — no external services, no API keys
 
 ## Architecture
@@ -43,16 +47,27 @@ Email phishing is a leading attack vector for credential theft, malware, and fra
                      │ GET /sample/{name}
                      ▼
 ┌─────────────────────────────────────────────────────────┐
-│                    FastAPI App                          │
-│  Routes: index, analyze, sample retrieval              │
+│                 FastAPI App (main.py)                   │
+│  Routes: index, analyze, sample retrieval               │
 └────────────────────┬────────────────────────────────────┘
                      │
-         ┌───────────┼───────────┬──────────┬────────────┐
-         ▼           ▼           ▼          ▼            ▼
-      parser.py  auth_checker  analyzer   geo.py     explainer.py
-      (headers)   (SPF/DKIM/)   (rules)    (GeoIP)    (plain
-                   (DMARC)    (findings)             English)
+      ┌──────────────┼──────────────────┬─────────────────┐
+      ▼              ▼                  ▼                 ▼
+  parser.py    auth_checker.py     analyzer.py      explainer.py
+  (headers)    (SPF/DKIM/DMARC     (20 rules →      (verdict in
+      │         + trust check)      findings)        plain words)
+      ▼                                  │
+ body_analyzer.py                        │
+ (MIME decode,          ┌────────────────┴────────────────┐
+  links)                ▼                                 ▼
+                     geo.py                        dns_checks.py
+                     (GeoIP, optional)             (live SPF/DMARC,
+                                                    opt-in, R13–R16)
 ```
+
+**The two that matter most for accuracy:** `auth_checker.py` decides whether an
+`Authentication-Results` header can be trusted at all, and `dns_checks.py` is the
+only component that consults a source the sender doesn't control.
 
 ## Install
 
@@ -74,9 +89,9 @@ Email phishing is a leading attack vector for credential theft, malware, and fra
    - Place it in the project root directory
    - Without this file, geographic lookups will return "Unknown"
 
-That's the whole setup — Mailgaze needs no API keys and no accounts. It runs
-entirely offline unless you tick "Also verify against DNS" on the form, which
-sends DNS queries for the sender's domain (see [R13–R16](#asking-dns-instead-r13r16)).
+That's the whole setup — no API keys, no accounts. Mailgaze runs entirely
+offline unless you tick "Also verify against DNS" on the form, which looks up
+the sender's domain (see [R13–R16](#asking-dns-instead-r13r16)).
 
 ## Run
 
@@ -86,72 +101,13 @@ python run.py
 
 Then open http://127.0.0.1:8000 in your browser.
 
-## Putting it online (free)
+## Putting it online
 
-Mailgaze is a good fit for a free host: it's a single stateless container with
-no database, no API keys, no persistent storage, and nothing to pay for. A
-`Dockerfile` is included and reads `HOST`, `PORT` and `MAILGAZE_ENV` from the
-environment, which is all any platform needs.
+Mailgaze runs as a container and deploys free on Render or Hugging Face
+Spaces — see **[DEPLOY.md](DEPLOY.md)**.
 
-> **GitHub Pages will not work for this project.** Pages serves static files
-> only — HTML, CSS and JavaScript. Mailgaze is a Python server that has to run
-> somewhere and respond to POSTs, so Pages has nothing to execute. Use GitHub to
-> *store* the code and one of the hosts below to *run* it; both redeploy
-> automatically whenever you push.
-
-**One thing to check before choosing a host:** rules R13–R16 make outbound DNS
-queries. Some free tiers block outbound network access, which silently disables
-them. The options below allow it.
-
-### Render — easiest from GitHub
-
-Connects straight to a GitHub repository and redeploys on every push. Free, no
-card. `render.yaml` in this repo configures the service, so there is nothing to
-fill in by hand.
-
-1. Push this repository to GitHub
-2. At render.com → **New** → **Blueprint**
-3. Authorize GitHub, pick this repository, click **Apply**
-
-Render reads `render.yaml`, builds the `Dockerfile`, and gives you a public URL
-like `https://mailgaze.onrender.com`. Every later `git push` redeploys it.
-
-The catch: free services **sleep after ~15 minutes of inactivity** and take
-roughly 50 seconds to wake, so the first visitor after a quiet spell waits.
-
-### Hugging Face Spaces — stays awake longer
-
-Free indefinitely, no credit card, and outbound DNS works.
-
-1. Create a **Space** at huggingface.co → *New Space* → SDK: **Docker**
-2. Push this repository to it (`git remote add space …` then `git push space main`)
-3. Add this to the very top of `README.md`, which is how Spaces is configured:
-
-```
----
-title: Mailgaze
-emoji: 📧
-colorFrom: blue
-colorTo: gray
-sdk: docker
-app_port: 7860
----
-```
-
-The `Dockerfile` already listens on 7860. Free Spaces sleep after a long idle
-period and wake on the next visit.
-
-### Anywhere else
-
-Any host that runs a container works. Locally:
-
-```bash
-docker build -t mailgaze .
-docker run -p 8000:7860 mailgaze
-```
-
-Avoid **PythonAnywhere's** free tier for this project — it restricts outbound
-network access to a whitelist, so the live DNS checks cannot run.
+(GitHub Pages cannot host it: Pages serves static files, and this is a
+Python server.)
 
 ## Usage
 
@@ -161,13 +117,26 @@ network access to a whitelist, so the live DNS checks cannot run.
    - **Apple Mail**: Open the email → View → Message → All Headers
    - **Other clients**: Look for "Show original," "View source," or "Raw message"
 
-2. **Paste the full headers** into the textarea on the index page
+2. **Paste the whole thing** into the textarea — headers *and* body. "Show
+   original" gives you the complete message, and there's no need to trim it:
+   the header rules read the top, and the link rules (R17–R20) read the body.
+   Pasting the readable message you see in your inbox will *not* work; the app
+   will tell you so rather than guess.
 
-3. **Click "Analyze"** to see the report with findings and verdict
+3. **Optionally tick "Also verify against DNS"** to run rules R13–R16. This is
+   the only part that can catch a well-made forgery, and the only part that
+   leaves your machine — it looks up the sender's domain, nothing else.
 
-4. **Try the samples** to see how it works:
-   - Click "Legitimate" to load a real, passing email
+4. **Click "Analyze"**. The report opens with a plain-language verdict, the
+   evidence behind it, and what to do; the full forensic breakdown sits under
+   "Show technical details".
+
+5. **Try the samples** to see how it works:
+   - Click "Legitimate" to load a passing email
    - Click "Phishing" to load a realistic phishing attempt
+
+   Both are synthetic and use reserved domains, so the live DNS rules skip them
+   deliberately — paste a real email to see those fire.
 
 ## Testing
 
