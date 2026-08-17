@@ -106,8 +106,6 @@ Then open http://127.0.0.1:8000 in your browser.
 Mailgaze runs as a container and deploys free on Render or Hugging Face
 Spaces — see **[DEPLOY.md](DEPLOY.md)**.
 
-(GitHub Pages cannot host it: Pages serves static files, and this is a
-Python server.)
 
 ## Usage
 
